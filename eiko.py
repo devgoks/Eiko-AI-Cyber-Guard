@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set your OpenAI API key
-openai_api_key = 'Open ApI key'
+openai_api_key = os.environ.get('OPENAPI_SECRET_KEY')
 client = OpenAI(api_key=openai_api_key)
 
 app = Flask(__name__)
