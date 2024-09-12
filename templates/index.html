@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EikO AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        #top-bar {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        #container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        select, input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            resize: none; /* Prevent resizing of the textarea */
+        }
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <h1>Eiko AI Fraud Detector</h1>
+</div>
+<div id="container">
+    <form id="form" action="/" method="post">
+        <select name="channel">
+            <option value="general">Select Channel Where You Received The Message</option>
+            <option value="Twitter">Twitter</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Email">Email</option>
+            <option value="Whatsapp">Whatsapp</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="PhoneCall">Phone Call</option>
+            <option value="PhoneSms">Phone SMS</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Other">Other</option>
+        </select>
+        <br><br>
+        <input type="text" name="sender" placeholder="Sender Username or Email Address or Phone Number">
+        <br><br>
+        <input type="text" name="time_received" placeholder="Time Received">
+        <br><br>
+        <textarea name="user_input" rows="8" placeholder="Enter your message here"></textarea>
+        <br><br>
+        <input type="submit" value="Check Message" onclick="showSpinner()">
+    </form>
+    <div id="spinner"></div>
+</div>
+<script>
+    function showSpinner() {
+        document.getElementById('spinner').style.display = 'block';
+    }
+</script>
+</body>
+</html>

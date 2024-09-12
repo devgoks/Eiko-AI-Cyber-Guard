@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EikO AI - Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        #top-bar {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .result {
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .fraudulent {
+            color: red;
+        }
+        .legitimate {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <h1>EIKO AI Fraud Detector</h1>
+</div>
+<div class="result {% if fraudulent %}fraudulent{% else %}legitimate{% endif %}">
+    <h2>Result</h2>
+    <p>Your message: {{ user_input }}</p>
+    {% if fraudulent %}
+    <p>This message is fraudulent.</p>
+    {% else %}
+    <p>This message is not fraudulent.</p>
+    {% endif %}
+    <p>{{ advice }}</p>
+</div>
+</body>
+</html>
