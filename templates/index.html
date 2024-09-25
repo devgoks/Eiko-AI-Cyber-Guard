@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EikO AI</title>
+    <title>EikO AI Cyber Guard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,7 +70,18 @@
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #3498db;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #autofill-positive-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: green;
             color: white;
             border: none;
             border-radius: 5px;
@@ -80,10 +91,11 @@
 </head>
 <body>
 <div id="top-bar">
-    <h1>Eiko AI Fraud Detector</h1>
+    <h1>Eiko AI Cyber Guard</h1>
 </div>
 <div id="container">
-    <button id="autofill-btn" onclick="autofillForm()">Click Here To Get Sample Data To Test</button>
+    <button id="autofill-btn" onclick="autofillForm()">Click Here To load Sample Negative Scenario To Test</button>
+    <button id="autofill-positive-btn" onclick="autofillFormPositive()">Click Here To load Sample Positive Scenario To Test</button>
     <br><br>
     <form id="form" action="/" method="post">
         <select id="channel" name="channel">
@@ -103,7 +115,7 @@
         <br><br>
         <input type="text" id="time_received" name="time_received" placeholder="Time Received">
         <br><br>
-        <textarea id="user_input" name="user_input" rows="8" placeholder="Enter your message here"></textarea>
+        <textarea id="user_input" name="user_input" rows="8" placeholder="Enter message here"></textarea>
         <br><br>
         <input type="submit" value="Check Message" onclick="showSpinner()">
     </form>
@@ -120,6 +132,13 @@
         document.getElementById('sender').value = 'First Bank';
         document.getElementById('time_received').value = '12:30 PM';
         document.getElementById('user_input').value = 'Someone has gained access into your bank app. send your first bank app password and pin to block it.';
+    }
+
+    function autofillFormPositive() {
+        document.getElementById('channel').value = 'Whatsapp';
+        document.getElementById('sender').value = 'Daniel';
+        document.getElementById('time_received').value = '10:30 AM';
+        document.getElementById('user_input').value = 'Hi Charles, How are you doing today';
     }
 </script>
 </body>

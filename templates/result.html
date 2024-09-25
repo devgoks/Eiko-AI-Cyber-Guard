@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EikO AI - Result</title>
+    <title>EikO AI Cyber Guard - Result</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,16 +47,33 @@
         h2 {
             margin-top: 0;
         }
+        #button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
 <div id="top-bar">
-    <h1>EIKO AI Fraud Detector</h1>
+    <h1>EIKO AI Cyber Guard</h1>
 </div>
 
 <!-- Display the user's message at the top -->
 <div id="message-container">
-    <p>Your message: {{ user_input }}</p>
+    <p>Message: {{ user_input }}</p>
 </div>
 
 <!-- Container for the ChatGPT and Google Gemini results -->
@@ -82,6 +99,11 @@
         {% endif %}
         <p>{{ gemini_advice }}</p>
     </div>
+</div>
+
+<!-- Button to go back to the home page -->
+<div id="button-container">
+    <a href="/" class="button">Conduct another Check</a>
 </div>
 
 </body>
