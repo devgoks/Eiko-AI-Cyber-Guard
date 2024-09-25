@@ -37,7 +37,7 @@
             font-size: 16px;
             border: 2px solid #3498db;
             border-radius: 5px;
-            resize: none; /* Prevent resizing of the textarea */
+            resize: none;
         }
         input[type="submit"] {
             margin-top: 10px;
@@ -66,6 +66,16 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        #autofill-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -73,8 +83,10 @@
     <h1>Eiko AI Fraud Detector</h1>
 </div>
 <div id="container">
+    <button id="autofill-btn" onclick="autofillForm()">Click Here To Get Sample Data To Test</button>
+    <br><br>
     <form id="form" action="/" method="post">
-        <select name="channel">
+        <select id="channel" name="channel">
             <option value="general">Select Channel Where You Received The Message</option>
             <option value="Twitter">Twitter</option>
             <option value="Facebook">Facebook</option>
@@ -87,19 +99,27 @@
             <option value="Other">Other</option>
         </select>
         <br><br>
-        <input type="text" name="sender" placeholder="Sender Username or Email Address or Phone Number">
+        <input type="text" id="sender" name="sender" placeholder="Sender Username or Email Address or Phone Number">
         <br><br>
-        <input type="text" name="time_received" placeholder="Time Received">
+        <input type="text" id="time_received" name="time_received" placeholder="Time Received">
         <br><br>
-        <textarea name="user_input" rows="8" placeholder="Enter your message here"></textarea>
+        <textarea id="user_input" name="user_input" rows="8" placeholder="Enter your message here"></textarea>
         <br><br>
         <input type="submit" value="Check Message" onclick="showSpinner()">
     </form>
     <div id="spinner"></div>
 </div>
+
 <script>
     function showSpinner() {
         document.getElementById('spinner').style.display = 'block';
+    }
+
+    function autofillForm() {
+        document.getElementById('channel').value = 'PhoneSms';
+        document.getElementById('sender').value = 'First Bank';
+        document.getElementById('time_received').value = '12:30 PM';
+        document.getElementById('user_input').value = 'Someone has gained access into your bank app. send your first bank app password and pin to block it.';
     }
 </script>
 </body>

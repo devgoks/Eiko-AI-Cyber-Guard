@@ -20,15 +20,17 @@
         h1 {
             margin: 0;
         }
-        .result {
+        #result-container {
+            display: flex;
+            justify-content: space-around;
             margin-top: 50px;
+        }
+        .result {
             padding: 20px;
             border-radius: 10px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 45%;
         }
         .fraudulent {
             color: red;
@@ -36,21 +38,40 @@
         .legitimate {
             color: green;
         }
+        h2 {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
 <div id="top-bar">
     <h1>EIKO AI Fraud Detector</h1>
 </div>
-<div class="result {% if fraudulent %}fraudulent{% else %}legitimate{% endif %}">
-    <h2>Result</h2>
-    <p>Your message: {{ user_input }}</p>
-    {% if fraudulent %}
-    <p>This message is fraudulent.</p>
-    {% else %}
-    <p>This message is not fraudulent.</p>
-    {% endif %}
-    <p>{{ advice }}</p>
+
+<div id="result-container">
+    <!-- ChatGPT result -->
+    <div class="result {% if chatgpt_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
+        <h2>ChatGPT Result</h2>
+        <p>Your message: {{ user_input }}</p>
+        {% if chatgpt_fraudulent %}
+        <p>This message is fraudulent.</p>
+        {% else %}
+        <p>This message is not fraudulent.</p>
+        {% endif %}
+        <p>{{ chatgpt_advice }}</p>
+    </div>
+
+    <!-- Google Gemini result -->
+    <div class="result {% if gemini_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
+        <h2>Google Gemini Result</h2>
+        <p>Your message: {{ user_input }}</p>
+        {% if gemini_fraudulent %}
+        <p>This message is fraudulent.</p>
+        {% else %}
+        <p>This message is not fraudulent.</p>
+        {% endif %}
+        <p>{{ gemini_advice }}</p>
+    </div>
 </div>
 </body>
 </html>
