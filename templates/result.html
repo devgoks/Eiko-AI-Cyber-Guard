@@ -20,10 +20,16 @@
         h1 {
             margin: 0;
         }
+        #message-container {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+            color: #333;
+        }
         #result-container {
             display: flex;
             justify-content: space-around;
-            margin-top: 50px;
+            margin-top: 30px;
         }
         .result {
             padding: 20px;
@@ -48,11 +54,16 @@
     <h1>EIKO AI Fraud Detector</h1>
 </div>
 
+<!-- Display the user's message at the top -->
+<div id="message-container">
+    <p>Your message: {{ user_input }}</p>
+</div>
+
+<!-- Container for the ChatGPT and Google Gemini results -->
 <div id="result-container">
     <!-- ChatGPT result -->
     <div class="result {% if chatgpt_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
         <h2>ChatGPT Result</h2>
-        <p>Your message: {{ user_input }}</p>
         {% if chatgpt_fraudulent %}
         <p>This message is fraudulent.</p>
         {% else %}
@@ -64,7 +75,6 @@
     <!-- Google Gemini result -->
     <div class="result {% if gemini_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
         <h2>Google Gemini Result</h2>
-        <p>Your message: {{ user_input }}</p>
         {% if gemini_fraudulent %}
         <p>This message is fraudulent.</p>
         {% else %}
@@ -73,5 +83,6 @@
         <p>{{ gemini_advice }}</p>
     </div>
 </div>
+
 </body>
 </html>
