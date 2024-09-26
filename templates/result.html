@@ -73,14 +73,14 @@
 
 <!-- Display the user's message at the top -->
 <div id="message-container">
-    <p>Message: {{ user_input }}</p>
+    <p>Your Message: {{ user_input }}</p>
 </div>
 
 <!-- Container for the ChatGPT and Google Gemini results -->
 <div id="result-container">
     <!-- ChatGPT result -->
     <div class="result {% if chatgpt_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
-        <h2>ChatGPT Result</h2>
+        <h2>ChatGPT Check Result</h2>
         {% if chatgpt_fraudulent %}
         <p>This message is fraudulent.</p>
         {% else %}
@@ -91,7 +91,7 @@
 
     <!-- Google Gemini result -->
     <div class="result {% if gemini_fraudulent %}fraudulent{% else %}legitimate{% endif %}">
-        <h2>Google Gemini Result</h2>
+        <h2>Google Gemini Check Result</h2>
         {% if gemini_fraudulent %}
         <p>This message is fraudulent.</p>
         {% else %}

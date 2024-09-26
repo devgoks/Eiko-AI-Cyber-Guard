@@ -29,15 +29,15 @@ def check_fraudulent_message(message):
 
     chatgpt_assistant_response = response.choices[0].message.content
 
-    print(response)
+    # print(response)
 
     google_model = genai.GenerativeModel("gemini-1.5-flash")
 
     google_model_response = google_model.generate_content(fraud_check_instruction + " \n Text to Check: \n"+message)
 
-    print(google_model_response.text)
+    # print(google_model_response)
 
-    return chatgpt_assistant_response, google_model_response.text
+    return chatgpt_assistant_response, google_model_response.text.replace('*', '')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
