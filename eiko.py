@@ -3,6 +3,7 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+from datetime import datetime
 
 load_dotenv()
 
@@ -15,6 +16,8 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 app = Flask(__name__)
 
 def check_fraudulent_message(message):
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{current_time} : {message} ")
     fraud_check_instruction = "Is the following message fraudulent?..., always include an advice in your response.....Also, at the end of your response if fraudulent add hashtag #Fraudulent if not #Nonfraudulent"
 
     messages = [
@@ -64,5 +67,5 @@ def index():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
 
