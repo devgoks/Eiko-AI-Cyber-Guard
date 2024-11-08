@@ -135,7 +135,7 @@
 <script>
         let mediaRecorder;
         let audioChunks = [];
-        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}:80`;
+        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}`;
         console.log(serverUrl);
         const socket = io.connect(serverUrl);
         const sessionId = Date.now(); // Generate a unique session ID for this transcription session
