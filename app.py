@@ -195,4 +195,4 @@ def parse_user_agent(user_agent):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=80)
+    socketio.run(app, host='0.0.0.0', port=443)
