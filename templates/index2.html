@@ -99,6 +99,20 @@
         .home-button:hover {
             background-color: #0056b3;
         }
+        .refresh-button {
+        padding: 15px 30px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 25px;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.3s;
+        }
+        .refresh-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -110,6 +124,7 @@
 <button class="start-button" onclick="startRecording()">Start Listening</button>
 <button class="stop-button" onclick="stopRecording()">Stop Listening</button>
 <button class="home-button" onclick="goHome()">Home Page</button>
+<button class="refresh-button" onclick="goFraudDetect()">Refresh Detection</button>
 <div id="status" class="status-idle">Status: Idle</div>
 <div class="transcription" id="transcription">Transcription will appear here...</div>
 <div class="fraudDetect" id="fraudDetect">Fraud Result will appear here...</div>
@@ -120,7 +135,8 @@
 <script>
         let mediaRecorder;
         let audioChunks = [];
-        const socket = io.connect('http://localhost:8080');  // Adjust URL as needed
+        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}:80`;
+        const socket = io.connect(serverUrl);
         const sessionId = Date.now(); // Generate a unique session ID for this transcription session
 
         // Fraud Detected Alert from WebSocket
@@ -188,6 +204,10 @@
 
         function goHome() {
             window.location.href = '/';
+        }
+
+        function goFraudDetect() {
+            window.location.href = '/eiko-ai-call-guard';
         }
 
     </script>
