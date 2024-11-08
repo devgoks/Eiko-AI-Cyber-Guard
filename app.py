@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 from google.cloud import speech, aiplatform
-import threading
-import io
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 import os
 import google.generativeai as genai
 from flask import render_template
@@ -12,9 +10,7 @@ import hashlib
 from datetime import datetime
 from openai import OpenAI
 from dotenv import load_dotenv
-import json
-from ipaddress import ip_address
-from urllib.parse import urlparse
+
 from collections import defaultdict
 
 load_dotenv()
