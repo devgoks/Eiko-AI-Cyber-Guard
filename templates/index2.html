@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #top-bar {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .transcription {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            background-color: #f8f8f8;
+            min-height: 100px;
+            display: none; /* Initially hidden */
+        }
+        .fraudDetect {
+            font-size: 24px;
+            font-weight: bold;
+            color: #b22222; /* Dark red text color */
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #e0b4b4; /* Light red border */
+            border-radius: 15px;
+            background-color: #ffe6e6; /* Light red background */
+            min-height: 100px;
+            display: none; /* Initially hidden */
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ddd;
+        }
+        .start-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .stop-button {
+            background-color: #dc3545;
+            color: white;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 15px;
+            width: 200px;
+            margin: 20px auto;
+        }
+        .status-idle {
+            background-color: lightyellow;
+            color: #666;
+        }
+        .status-listening {
+            background-color: lightgreen;
+            color: green;
+        }
+        .status-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .home-button {
+        padding: 15px 30px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 25px;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.3s;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <h1>EIKO AI Cyber Guard</h1>
+</div>
+<br><br>
+<h1>Audio Conversation Real-Time Fraud Detection</h1>
+<button class="start-button" onclick="startRecording()">Start Listening</button>
+<button class="stop-button" onclick="stopRecording()">Stop Listening</button>
+<button class="home-button" onclick="goHome()">Home Page</button>
+<div id="status" class="status-idle">Status: Idle</div>
+<div class="transcription" id="transcription">Transcription will appear here...</div>
+<div class="fraudDetect" id="fraudDetect">Fraud Result will appear here...</div>
+
+
+<!-- Socket.IO Client for Real-time Updates -->
+<script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+<script>
+        let mediaRecorder;
+        let audioChunks = [];
+        const socket = io.connect('http://localhost:8080');  // Adjust URL as needed
+        const sessionId = Date.now(); // Generate a unique session ID for this transcription session
+
+        // Fraud Detected Alert from WebSocket
+        socket.on('fraud_detected', function(data) {
+            document.getElementById("status").innerText = "Status: Fraud detected!";
+            document.getElementById("status").classList = "status-alert";
+            const fraudDetectDiv = document.getElementById("fraudDetect");
+            fraudDetectDiv.style.display = "block"; // Make it visible
+            fraudDetectDiv.innerHTML = `<p>${data.message || "No Fraud Result YET"}</p>`;
+        });
+
+        // Display Transcribed Text from WebSocket
+        socket.on('successful_transcription', function(data) {
+            const transcriptionDiv = document.getElementById("transcription");
+            transcriptionDiv.style.display = "block"; // Make it visible
+            transcriptionDiv.innerHTML = `<p>${data.transcription || "No transcription available"}</p>`;  // Append each transcription
+        });
+
+        async function startRecording() {
+            document.getElementById("status").innerText = "Status: Listening...";
+            document.getElementById("status").classList = "status-listening";
+            document.getElementById("transcription").style.display = "none"; // Hide transcription initially
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                    const audioBlob = new Blob([event.data], { type: 'audio/webm' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob);
+                    formData.append('sessionId', sessionId);  // Include session ID in the form data
+
+                    fetch('/process_audio', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Server response:", data.message);
+                        mediaRecorder.stop();
+                        mediaRecorder.start(3000); // Restart recording every 10 seconds
+                    })
+                    .catch(error => {
+                        console.error("Error sending audio to server:", error);
+                    });
+                };
+
+                mediaRecorder.start(3000);
+            } catch (err) {
+                console.error("Error accessing microphone:", err);
+                document.getElementById("status").innerText = "Status: Error accessing microphone.";
+                document.getElementById("status").classList = "status-idle";
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                document.getElementById("status").innerText = "Status: Stopped.";
+                document.getElementById("status").classList = "status-idle";
+            }
+        }
+
+        function goHome() {
+            window.location.href = '/';
+        }
+
+    </script>
+</body>
+</html>

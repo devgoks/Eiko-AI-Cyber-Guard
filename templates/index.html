@@ -87,6 +87,24 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        #button-container {
+            text-align: right;
+            margin-top: 30px;
+        }
+        #button-call-guard {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        #button-call-guard:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +112,10 @@
     <h1>Eiko AI Cyber Guard</h1>
 </div>
 <div id="container">
+    <div id="button-container">
+        <a href="/eiko-ai-call-guard" id="button-call-guard">Click Here To Use Eiko Realtime Call Guard</a>
+    </div>
+    <br><br><br>
     <button id="autofill-btn" onclick="autofillForm()">Click Here To load Sample Negative Scenario To Test</button>
     <button id="autofill-positive-btn" onclick="autofillFormPositive()">Click Here To load Sample Positive Scenario To Test</button>
     <br><br>
