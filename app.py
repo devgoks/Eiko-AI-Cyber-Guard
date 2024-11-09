@@ -10,6 +10,7 @@ import hashlib
 from datetime import datetime
 from openai import OpenAI
 from dotenv import load_dotenv
+import eventlet
 
 from collections import defaultdict
 
@@ -26,7 +27,7 @@ app = Flask(__name__)
 # HashMap to store previous transcriptions
 transcription_history = defaultdict(list)
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 # Initialize Google Cloud Speech and Vertex AI clients
 speech_client = speech.SpeechClient()
