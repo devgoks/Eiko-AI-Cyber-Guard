@@ -135,8 +135,10 @@
 <script>
         let mediaRecorder;
         let audioChunks = [];
-        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}`;
+        let triggerInner = false;
+        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}:8080`;
         console.log(serverUrl);
+        let count =0;
         const socket = io.connect(serverUrl);
         const sessionId = Date.now(); // Generate a unique session ID for this transcription session
 
@@ -166,8 +168,18 @@
                 mediaRecorder = new MediaRecorder(stream);
 
                 mediaRecorder.ondataavailable = event => {
+                    if (triggerInner){
+                        console.log("here:" + event.data);
+                        triggerInner = false;
+                        return;
+                    }
+
+                    count +=1;
+
+                    console.log("count api: "+count);
                     audioChunks.push(event.data);
-                    const audioBlob = new Blob([event.data], { type: 'audio/webm' });
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    audioChunks = [];
                     const formData = new FormData();
                     formData.append('audio', audioBlob);
                     formData.append('sessionId', sessionId);  // Include session ID in the form data
@@ -179,6 +191,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("Server response:", data.message);
+                        triggerInner = true;
                         mediaRecorder.stop();
                         mediaRecorder.start(3000); // Restart recording every 10 seconds
                     })
