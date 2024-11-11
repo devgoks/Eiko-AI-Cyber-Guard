@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,97 +133,107 @@
 <!-- Socket.IO Client for Real-time Updates -->
 <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
 <script>
-        let mediaRecorder;
-        let audioChunks = [];
-        let triggerInner = false;
-        const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}:8080`;
-        console.log(serverUrl);
-        let count =0;
-        const socket = io.connect(serverUrl);
-        const sessionId = Date.now(); // Generate a unique session ID for this transcription session
+    let mediaRecorder;
+    let audioChunks = [];
+    let triggerInner = false;
+    const serverUrl = `${window.location.protocol}//${window.location.hostname || 'localhost'}`;
+    console.log(serverUrl);
+    let count = 0;
+    const socket = io.connect(serverUrl);
+    const sessionId = Date.now();
+    let refreshTimer;
 
-        // Fraud Detected Alert from WebSocket
-        socket.on('fraud_detected', function(data) {
-            document.getElementById("status").innerText = "Status: Fraud detected!";
-            document.getElementById("status").classList = "status-alert";
-            const fraudDetectDiv = document.getElementById("fraudDetect");
-            fraudDetectDiv.style.display = "block"; // Make it visible
-            fraudDetectDiv.innerHTML = `<p>${data.message || "No Fraud Result YET"}</p>`;
-        });
+    socket.on('fraud_detected', function(data) {
+        document.getElementById("status").innerText = "Status: Fraud detected!";
+        document.getElementById("status").classList = "status-alert";
+        const fraudDetectDiv = document.getElementById("fraudDetect");
+        fraudDetectDiv.style.display = "block";
+        fraudDetectDiv.innerHTML = `<p>${data.message || "No Fraud Result YET"}</p>`;
+    });
 
-        // Display Transcribed Text from WebSocket
-        socket.on('successful_transcription', function(data) {
-            const transcriptionDiv = document.getElementById("transcription");
-            transcriptionDiv.style.display = "block"; // Make it visible
-            transcriptionDiv.innerHTML = `<p>${data.transcription || "No transcription available"}</p>`;  // Append each transcription
-        });
+    socket.on('successful_transcription', function(data) {
+        const transcriptionDiv = document.getElementById("transcription");
+        transcriptionDiv.style.display = "block";
+        transcriptionDiv.innerHTML = `<p>${data.transcription || "No transcription available"}</p>`;
+    });
 
-        async function startRecording() {
-            document.getElementById("status").innerText = "Status: Listening...";
-            document.getElementById("status").classList = "status-listening";
-            document.getElementById("transcription").style.display = "none"; // Hide transcription initially
+    async function startRecording() {
+        document.getElementById("status").innerText = "Status: Listening...";
+        document.getElementById("status").classList = "status-listening";
+        document.getElementById("transcription").style.display = "none";
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
 
-                mediaRecorder.ondataavailable = event => {
-                    if (triggerInner){
-                        console.log("here:" + event.data);
-                        triggerInner = false;
-                        return;
-                    }
+            mediaRecorder.ondataavailable = event => {
+                if (triggerInner) {
+                    console.log("here:" + event.data);
+                    triggerInner = false;
+                    return;
+                }
 
-                    count +=1;
+                count += 1;
 
-                    console.log("count api: "+count);
-                    audioChunks.push(event.data);
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    audioChunks = [];
-                    const formData = new FormData();
-                    formData.append('audio', audioBlob);
-                    formData.append('sessionId', sessionId);  // Include session ID in the form data
+                console.log("count api: " + count);
+                audioChunks.push(event.data);
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                audioChunks = [];
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+                formData.append('sessionId', sessionId);
 
-                    fetch('/process_audio', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Server response:", data.message);
-                        triggerInner = true;
-                        mediaRecorder.stop();
-                        mediaRecorder.start(3000); // Restart recording every 10 seconds
-                    })
-                    .catch(error => {
-                        console.error("Error sending audio to server:", error);
-                    });
-                };
+                fetch('/process_audio', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server response:", data.message);
+                    triggerInner = true;
+                    mediaRecorder.stop();
+                    mediaRecorder.start(3000);
+                })
+                .catch(error => {
+                    console.error("Error sending audio to server:", error);
+                });
+            };
 
-                mediaRecorder.start(3000);
-            } catch (err) {
-                console.error("Error accessing microphone:", err);
-                document.getElementById("status").innerText = "Status: Error accessing microphone.";
-                document.getElementById("status").classList = "status-idle";
-            }
+            mediaRecorder.start(3000);
+
+            // Set a 15-minute timer to refresh the page if mediaRecorder is active
+            refreshTimer = setTimeout(() => {
+                if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                    window.location.reload();
+                }
+            }, 15 * 60 * 1000); // 15 minutes
+
+        } catch (err) {
+            console.error("Error accessing microphone:", err);
+            document.getElementById("status").innerText = "Status: Error accessing microphone.";
+            document.getElementById("status").classList = "status-idle";
         }
+    }
 
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== "inactive") {
-                mediaRecorder.stop();
-                document.getElementById("status").innerText = "Status: Stopped.";
-                document.getElementById("status").classList = "status-idle";
-            }
+    function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+            document.getElementById("status").innerText = "Status: Stopped.";
+            document.getElementById("status").classList = "status-idle";
+
+            // Clear the refresh timer
+            clearTimeout(refreshTimer);
         }
+    }
 
-        function goHome() {
-            window.location.href = '/';
-        }
+    function goHome() {
+        window.location.href = '/';
+    }
 
-        function goFraudDetect() {
-            window.location.href = '/eiko-ai-call-guard';
-        }
+    function goFraudDetect() {
+        window.location.href = '/eiko-ai-call-guard';
+    }
 
-    </script>
+</script>
 </body>
 </html>
